@@ -1,0 +1,28 @@
+{
+  "name": "attendance-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/masrudmubarok/attendance-api.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/masrudmubarok/attendance-api/issues"
+  },
+  "homepage": "https://github.com/masrudmubarok/attendance-api#readme",
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "elasticsearch": "^16.7.3",
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2",
+    "mysql2": "^3.12.0",
+    "redis": "^4.7.0"
+  }
+}
