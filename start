@@ -1,0 +1,10 @@
+#!/bin/bash
+
+echo "Starting Docker..."
+docker-compose up -d
+
+if [ $? -eq 0 ]; then
+  echo "Docker started successfully."
+else
+  echo "Failed to start Docker."
+fi

@@ -1,0 +1,12 @@
+#!/bin/bash
+
+echo "Rebuilding Docker containers..."
+docker-compose down
+docker-compose build --no-cache
+docker-compose up -d
+
+if [ $? -eq 0 ]; then
+  echo "Docker containers rebuilt successfully."
+else
+  echo "Failed to rebuild Docker containers."
+fi
