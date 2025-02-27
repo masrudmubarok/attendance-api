@@ -2,7 +2,7 @@ const db = require("../../config").db;
 const User = require("../Entity/UserEntity");
 
 module.exports = {
-  findUserByEmail: async (email) => {
+  getUserByEmail: async (email) => {
     try {
       const [rows] = await db.execute("SELECT * FROM users WHERE email = ?", [email]);
       if (rows.length) {
@@ -16,7 +16,7 @@ module.exports = {
     }
   },
 
-  findUserById: async (id) => {
+  getUserById: async (id) => {
     try {
       const [rows] = await db.execute("SELECT * FROM users WHERE id = ?", [id]);
       if (rows.length) {
@@ -37,7 +37,7 @@ module.exports = {
         "INSERT INTO users (email, password, name, created_at) VALUES (?, ?, ?, NOW())",
         [user.getEmail(), user.password, user.getName()]
       );
-      const newUser = await module.exports.findUserByEmail(email);
+      const newUser = await module.exports.getUserByEmail(email);
       console.log(`User created successfully: ${email}`);
       return newUser;
     } catch (error) {
@@ -53,7 +53,7 @@ module.exports = {
         "UPDATE users SET email = ?, password = ?, name = ? WHERE id = ?",
         [user.getEmail(), user.password, user.getName(), id]
       );
-      const updatedUser = await module.exports.findUserById(id);
+      const updatedUser = await module.exports.getUserById(id);
       console.log(`User updated successfully: ${id}`);
       return updatedUser;
     } catch (error) {
