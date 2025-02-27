@@ -15,42 +15,11 @@ REDIS_HOST=redis
 REDIS_PORT=6379
 ELASTICSEARCH_URL=http://elasticsearch:9200
 JWT_SECRET=jwt-secret-key
-PORT=3000
+PORT=5002
 EOF
 
-# 4. Start Docker Compose
+# 3. Start Docker Compose
 echo "3. Starting Docker Compose..."
 docker-compose up -d
-
-# 5. Initialize MySQL Database
-echo "4. Initializing MySQL database (skip if exists)..."
-if ! docker exec -it attendance-api-mysql-1 mysql -u root -p"$DB_PASSWORD" -e "SHOW DATABASES LIKE 'attendance';" | grep -q 'attendance'; then
-  docker exec -it attendance-api-mysql-1 mysql -u root -p"$DB_PASSWORD" <<SQL
-CREATE DATABASE attendance;
-USE attendance;
-
-CREATE TABLE users (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  email VARCHAR(255) UNIQUE NOT NULL,
-  password VARCHAR(255) NOT NULL,
-  name VARCHAR(255) NOT NULL,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE TABLE attendance (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  user_id INT NOT NULL,
-  clock_in TIMESTAMP NOT NULL,
-  clock_out TIMESTAMP NULL,
-  FOREIGN KEY (user_id) REFERENCES users(id)
-);
-SQL
-else
-  echo "Database 'attendance' already exists. Skip creating database."
-fi
-
-# 6. Start Application
-echo "5. Starting application..."
-npm start
 
 echo "Project setup complete!"

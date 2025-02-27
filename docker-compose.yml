@@ -3,7 +3,7 @@ services:
   app:
     build: .
     ports:
-      - '3000:3000'
+      - '5002:5002'
     environment:
       DB_HOST: mysql
       DB_USER: root
@@ -23,7 +23,7 @@ services:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: root
     ports:
-      - '3306:3306'
+      - '3322:3306'
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.17.0
     environment:
