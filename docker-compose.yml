@@ -1,20 +1,38 @@
 version: '3.8'
+
 services:
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db-attendance
+      - redis-attendance
+      - elasticsearch-attendance
+    env_file:
+      - .env
+    networks:
+      - backend
+
   db-attendance:
     container_name: db-attendance
-    image: mysql:5.7
-    restart: always
+    image: mysql:8.0
     environment:
       MYSQL_ROOT_PASSWORD: root
+      MYSQL_AUTHENTICATION_PLUGIN: root
     ports:
       - "3322:3306"
+    networks:
+      - backend
 
   redis-attendance:
     container_name: redis-attendance
     image: redis:6.2.6
     restart: always
     ports:
-      - "6380:6380"
+      - "6380:6379"
+    networks:
+      - backend
 
   elasticsearch-attendance:
     container_name: elasticsearch-attendance
@@ -26,15 +44,13 @@ services:
     ports:
       - "9200:9200"
       - "9300:9300"
+    networks:
+      - backend
 
-  attendance-api:
-    container_name: attendance-api
-    build: .
-    ports:
-      - "3000:3000"
-    depends_on:
-      - db-attendance
-      - redis-attendance
-      - elasticsearch-attendance
-    env_file:
-      - .env
+volumes:
+  db-data:
+  redis-data:
+  es-data:
+
+networks:
+  backend:
