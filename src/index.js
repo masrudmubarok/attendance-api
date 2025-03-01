@@ -46,7 +46,7 @@ app.use(
       .swagger-ui .topbar .topbar-wrapper img { 
         display: none !important; 
       }
-      .swagger-ui .topbar { background-color: #4CAF50; }
+      .swagger-ui .topbar { background-color: #0ead95; }
     `,
   })
 );

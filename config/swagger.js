@@ -6,7 +6,6 @@ const options = {
     info: {
       title: "Attendance API",
       description: "API documentation for User Attendance System",
-      version: "1.0.0",
     },
     tags: [
         {
@@ -20,8 +19,7 @@ const options = {
       ],
     servers: [
       {
-        url: "http://localhost:3001",
-        description: "Local server",
+        url: "http://localhost:{port}/",
       },
     ],
     components: {
