@@ -25,7 +25,15 @@ export const getAttendanceByUserId = async (user_id) => {
 
 export const getAllAttendance = async () => {
   const [rows] = await pool.execute(
-    "SELECT * FROM attendance ORDER BY clock_in DESC"
+    `SELECT 
+      a.user_id, 
+      u.name AS user_name, 
+      u.email AS user_email, 
+      a.clock_in, 
+      a.clock_out 
+    FROM attendance a
+    JOIN users u ON a.user_id = u.id
+    ORDER BY a.clock_in DESC`
   );
   return rows;
 };
