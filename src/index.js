@@ -2,7 +2,7 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import swaggerUi from "swagger-ui-express";
-import swaggerDocs from "./config/swagger.js";
+import swaggerDocs from "../config/swagger.js";
 import authRouter from "./routes/AuthRoute.js";
 import attendanceRouter from "./routes/AttendanceRoute.js";
 
@@ -54,5 +54,4 @@ app.use(
 // Start Server
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);
-  console.log(`Swagger Docs: http://localhost:${PORT}/`);
 });
