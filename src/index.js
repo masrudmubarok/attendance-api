@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import pool from "./config/db.js";
+import authRouter from "./routes/AuthRoute.js";
 
 dotenv.config();
 
@@ -25,6 +26,7 @@ app.get("/connection", async (req, res) => {
 });
 
 // Route API
+app.use("/auth", authRouter);
 
 // Start server
 app.listen(PORT, () => {
