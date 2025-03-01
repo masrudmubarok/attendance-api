@@ -6,27 +6,32 @@ const router = Router();
 
 /**
  * @swagger
+ * components:
+ *   securitySchemes:
+ *     bearerAuth:
+ *       type: http
+ *       scheme: bearer
+ *       bearerFormat: JWT
+ *       description: |
+ *         This API uses JWT (JSON Web Token) for authentication. 
+ *
  * /attend/clock-in:
  *   post:
  *     summary: Clock-in attendance
  *     description: Employees clock in
  *     tags:
  *       - Attendance
- *     parameters:
- *       - in: header
- *         name: Authorization
- *         schema:
- *           type: string
- *           example: "Bearer <your_jwt_token>"
- *         required: true
- *         description: "JWT token for authentication"
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
- *         description: clock-in success
+ *         description: Clock-in success
+ *       401:
+ *         description: Unauthorized - Missing or invalid token
  *       400:
- *         description: clock-in failed
+ *         description: Clock-in failed
  *       500:
- *        description: server error
+ *         description: Server error
  */
 router.post("/clock-in", authenticateUser, clockInUser);
 
@@ -38,21 +43,17 @@ router.post("/clock-in", authenticateUser, clockInUser);
  *     description: Employees clock out
  *     tags:
  *       - Attendance
- *     parameters:
- *       - in: header
- *         name: Authorization
- *         schema:
- *           type: string
- *           example: "Bearer your_jwt_token"
- *         required: true
- *         description: "JWT token for authentication"
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
- *         description: clock-out success
+ *         description: Clock-out success
+ *       401:
+ *         description: Unauthorized - Missing or invalid token
  *       400:
- *         description: already clocked out
+ *         description: Already clocked out
  *       500:
- *         description: server error
+ *         description: Server error
  */
 router.post("/clock-out", authenticateUser, clockOutUser);
 
@@ -64,14 +65,8 @@ router.post("/clock-out", authenticateUser, clockOutUser);
  *     description: Retrieve the attendance history of the authenticated user
  *     tags:
  *       - Attendance
- *     parameters:
- *       - in: header
- *         name: Authorization
- *         schema:
- *           type: string
- *           example: "Bearer <your_jwt_token>"
- *         required: true
- *         description: "JWT token for authentication"
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: Successfully retrieved attendance history

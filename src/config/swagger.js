@@ -5,9 +5,19 @@ const options = {
     openapi: "3.0.0",
     info: {
       title: "Attendance API",
-      description: "API documentation for Employees Attendance System",
+      description: "API documentation for User Attendance System",
       version: "1.0.0",
     },
+    tags: [
+        {
+          name: "Authentication",
+          description: "User authentication endpoints",
+        },
+        {
+          name: "Attendance",
+          description: "User attendance endpoints",
+        },
+      ],
     servers: [
       {
         url: "http://localhost:3001",
@@ -26,6 +36,12 @@ const options = {
         User: {
           type: "object",
           properties: {
+            id: {
+              type: "integer",
+              format: "int64",
+              example: 1,
+              description: "Auto-increment user ID",
+            },
             email: {
               type: "string",
               example: "user@example.com",
@@ -38,21 +54,35 @@ const options = {
               type: "string",
               example: "John Doe",
             },
+            created_at: {
+              type: "string",
+              format: "date-time",
+              example: "2025-03-01T12:00:00Z",
+              description: "Timestamp when the user was created, defaults to NOW()",
+            },
           },
         },
         Attendance: {
           type: "object",
           properties: {
-            userId: {
-              type: "string",
-              example: "64a7b2f6d1f10c1234567890",
+            id: {
+              type: "integer",
+              format: "int64",
+              example: 1001,
+              description: "Auto-increment attendance ID",
             },
-            clockInTime: {
+            user_id: {
+              type: "integer",
+              format: "int64",
+              example: 1,
+              description: "Reference to the user ID",
+            },
+            clock_in: {
               type: "string",
               format: "date-time",
               example: "2024-03-01T08:00:00Z",
             },
-            clockOutTime: {
+            clock_out: {
               type: "string",
               format: "date-time",
               example: "2024-03-01T17:00:00Z",
