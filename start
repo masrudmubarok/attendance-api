@@ -1,7 +1,0 @@
-#!/bin/bash
-
-echo "Starting Docker..."
-
-/usr/local/bin/docker compose -f docker-compose.yml stop
-COMPOSE_HTTP_TIMEOUT=200 /usr/local/bin/docker compose -f docker-compose.yml start
-/usr/local/bin/docker compose -f docker-compose.yml ps

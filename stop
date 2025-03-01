@@ -1,5 +1,0 @@
-#!/bin/bash
-
-echo "Stopping Docker..."
-/usr/local/bin/docker compose -f docker-compose.yml stop;
-/usr/local/bin/docker compose -f docker-compose.yml ps;
