@@ -3,6 +3,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import pool from "./config/db.js";
 import authRouter from "./routes/AuthRoute.js";
+import attendanceRouter from "./routes/AttendanceRoute.js";
 
 dotenv.config();
 
@@ -27,6 +28,7 @@ app.get("/connection", async (req, res) => {
 
 // Route API
 app.use("/auth", authRouter);
+app.use("/attend", attendanceRouter);
 
 // Start server
 app.listen(PORT, () => {
