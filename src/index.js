@@ -1,7 +1,8 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import pool from "./config/db.js";
+import swaggerUi from "swagger-ui-express";
+import swaggerDocs from "./config/swagger.js";
 import authRouter from "./routes/AuthRoute.js";
 import attendanceRouter from "./routes/AttendanceRoute.js";
 
@@ -14,23 +15,44 @@ const PORT = process.env.PORT || 3002;
 app.use(cors());
 app.use(express.json());
 
-// Test MySQL connection
-app.get("/connection", async (req, res) => {
-  try {
-    const result = await pool.query("SELECT DATABASE()");
-    console.log(result);
-    res.status(200).send(`Database connected is ${result[0][0]["DATABASE()"]}`);
-  } catch (error) {
-    console.error("Database connection error:", error);
-    res.status(500).send("Database connection failed");
-  }
-});
-
-// Route API
+// Routes
 app.use("/auth", authRouter);
 app.use("/attend", attendanceRouter);
 
-// Start server
+// Swagger
+app.use(
+  "/",
+  swaggerUi.serve,
+  swaggerUi.setup(swaggerDocs, {
+    swaggerOptions: {
+      persistAuthorization: true,
+    },
+    customSiteTitle: "Attendance API Docs",
+    customCss: `
+      .swagger-ui .topbar .wrapper .topbar-wrapper {
+        display: none;
+      }
+      .swagger-ui .topbar .wrapper {
+        display: flex;
+        align-items: center;
+      }
+      .swagger-ui .topbar .wrapper:before { 
+        content: "DEVLITE"; 
+        font-size: 20px; 
+        font-weight: bold; 
+        color: white;
+        margin-right: 20px;
+      }
+      .swagger-ui .topbar .topbar-wrapper img { 
+        display: none !important; 
+      }
+      .swagger-ui .topbar { background-color: #4CAF50; }
+    `,
+  })
+);
+
+// Start Server
 app.listen(PORT, () => {
-  console.log(`Server is running at http://localhost:${PORT}`);
+  console.log(`Server running at http://localhost:${PORT}`);
+  console.log(`Swagger Docs: http://localhost:${PORT}/`);
 });
