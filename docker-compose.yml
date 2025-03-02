@@ -1,0 +1,69 @@
+version: '3.8'
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: attendance
+      MYSQL_INITDB_SQL: |
+        ALTER USER 'root'@'%' IDENTIFIED WITH mysql_native_password BY 'root';
+    ports:
+      - "3322:3306"
+    networks:
+      - app-network
+
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - "6379:6379"
+    networks:
+      - app-network
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.6
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - xpack.security.enabled=false
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
+    networks:
+      - app-network
+
+  app:
+    build: .
+    container_name: attendance-api
+    ports:
+      - "3001:3001"
+    networks:
+      - app-network
+    environment:
+      PORT: 3001
+      DB_HOST: mysql
+      DB_USER: root
+      DB_PASSWORD: root
+      DB_NAME: attendance
+      DB_PORT: 3306
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      ELASTICSEARCH_HOST: elasticsearch
+      ELASTICSEARCH_PORT: 9200
+      JWT_SECRET: a6a5b4bf6800ad9f21f3e1121ca8f58599148daca6be47b7fc36af20603c94f7
+      JWT_EXPIRES_IN: 1d
+      SMTP_HOST: smtp.mailtrap.io
+      SMTP_PORT: 2525
+      SMTP_USER: your_mailtrap_user
+      SMTP_PASS: your_mailtrap_password
+
+volumes:
+  elasticsearch-data:
+
+networks:
+  app-network:
+    driver: bridge

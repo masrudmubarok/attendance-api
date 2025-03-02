@@ -1,0 +1,17 @@
+#!/bin/bash
+
+#rebuild and restart docker containers
+status2=$(docker images -f "dangling=true" -q | wc -l)
+
+# Delete all none images
+if [ $status2 -gt 0 ]; then
+    echo "images not empty, removing them..."
+    #docker rmi $(docker images -q)
+    docker rmi $(docker images -f "dangling=true" -q)
+    #docker network prune
+    echo "done"
+fi
+
+#docker network create abridge;
+/usr/local/bin/docker compose -f docker-compose.yml up --build -d
+/usr/local/bin/docker compose -f docker-compose.yml ps

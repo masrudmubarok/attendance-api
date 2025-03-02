@@ -3,7 +3,10 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-const elasticUrl = process.env.ELASTIC_URL || 'http://localhost:9200';
+const ELASTICSEARCH_HOST = process.env.ELASTICSEARCH_HOST ?? 'localhost';
+const ELASTICSEARCH_PORT = process.env.ELASTICSEARCH_PORT ?? 9200;
+
+const elasticUrl = `http://${ELASTICSEARCH_HOST}:${ELASTICSEARCH_PORT}`;
 
 const elasticsearch = new Client({
   node: elasticUrl,
