@@ -25,6 +25,8 @@ export const clockInUser = async (req, res) => {
       body: { user_id, clock_in: clockInTime, attendanceId: attendanceId },
     });
 
+    redis.publish("clockEvents", JSON.stringify({ userId: user_id, eventType: "clockIn", time: clockInTime }));
+
     res.status(200).json({ message: "Clock-in recorded successfully" });
   } catch (error) {
     console.error("Error clocking in:", error);
@@ -43,10 +45,12 @@ export const clockOutUser = async (req, res) => {
 
     const clockOutTime = new Date().toISOString();
     const attendance = await getAttendanceByUserId(user_id);
-    if(!attendance || attendance.length === 0){
-        return res.status(400).json({message: "No clock in data found for this user."});
+
+    if (!attendance || attendance.length === 0) {
+      return res.status(400).json({ message: "No clock in data found for this user." });
     }
-    const latestAttendance = attendance.sort((a,b) => new Date(b.clock_in) - new Date(a.clock_in))[0];
+
+    const latestAttendance = attendance.sort((a, b) => new Date(b.clock_in) - new Date(a.clock_in))[0];
 
     await redis.set(clockOutKey, clockOutTime, "EX", 86400);
     const affectedRows = await clockOut(user_id);
@@ -64,6 +68,8 @@ export const clockOutUser = async (req, res) => {
       body: { doc: { clock_out: clockOutTime } },
     });
 
+    redis.publish("clockEvents", JSON.stringify({ userId: user_id, eventType: "clockOut", time: clockOutTime }));
+
     res.status(200).json({ message: "Clock-out recorded successfully" });
   } catch (error) {
     console.error("Error clocking out:", error);
@@ -74,14 +80,15 @@ export const clockOutUser = async (req, res) => {
 export const getAttendanceByUser = async (req, res) => {
   try {
     const user_id = req.user.id;
-    const cachedData = await redis.get(`attendance:${user_id}`);
+    const cacheKey = `attendance:${user_id}`;
+    const cachedData = await redis.get(cacheKey);
 
     if (cachedData) {
       return res.status(200).json({ attendance: JSON.parse(cachedData) });
     }
 
     const attendance = await getAttendanceByUserId(user_id);
-    await redis.setex(`attendance:${user_id}`, 600, JSON.stringify(attendance));
+    await redis.setex(cacheKey, 600, JSON.stringify(attendance));
 
     res.status(200).json({ attendance });
   } catch (error) {
@@ -92,14 +99,15 @@ export const getAttendanceByUser = async (req, res) => {
 
 export const getAttendanceReport = async (req, res) => {
   try {
-    const cachedData = await redis.get("all_attendance");
+    const cacheKey = "all_attendance";
+    const cachedData = await redis.get(cacheKey);
 
     if (cachedData) {
       return res.status(200).json({ attendance: JSON.parse(cachedData) });
     }
 
     const attendance = await getAllAttendance();
-    await redis.setex("all_attendance", 600, JSON.stringify(attendance));
+    await redis.setex(cacheKey, 600, JSON.stringify(attendance));
 
     res.status(200).json({ attendance });
   } catch (error) {
@@ -114,10 +122,10 @@ export const searchAttendance = async (req, res) => {
     const result = await elasticsearch.search({
       index: "attendance",
       body: {
-        query: { match: { user_id } },
+        query: { match: { user_id: user_id } },
       },
     });
-    res.status(200).json({ attendance: result.hits.hits });
+    res.status(200).json({ attendance: result.hits.hits.map(hit => hit._source) });
   } catch (error) {
     console.error("Error searching attendance:", error);
     res.status(500).json({ message: "Error searching attendance", error: error.message });

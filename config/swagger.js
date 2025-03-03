@@ -16,6 +16,10 @@ const options = {
           name: "Attendance",
           description: "User attendance endpoints",
         },
+        {
+          name: "User",
+          description: "User data endpoints",
+        },
       ],
     servers: [
       {

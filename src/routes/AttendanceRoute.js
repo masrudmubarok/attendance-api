@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { clockInUser, clockOutUser, getAttendanceReport } from "../controllers/AttendanceController.js";
-import { authenticateUser } from "../middlewares/AuthMiddleware.js";
+import { verifToken } from "../middlewares/AuthMiddleware.js";
 
 const router = Router();
 
@@ -33,7 +33,7 @@ const router = Router();
  *       500:
  *         description: Server error
  */
-router.post("/clock-in", authenticateUser, clockInUser);
+router.post("/clock-in", verifToken, clockInUser);
 
 /**
  * @swagger
@@ -55,7 +55,7 @@ router.post("/clock-in", authenticateUser, clockInUser);
  *       500:
  *         description: Server error
  */
-router.post("/clock-out", authenticateUser, clockOutUser);
+router.post("/clock-out", verifToken, clockOutUser);
 
 /**
  * @swagger
@@ -75,7 +75,7 @@ router.post("/clock-out", authenticateUser, clockOutUser);
  *       500:
  *         description: Server error
  */
-router.get("/report", authenticateUser, getAttendanceReport);
+router.get("/report", verifToken, getAttendanceReport);
 
 // Route test
 router.get("/test", (req, res) => {

@@ -1,6 +1,10 @@
 #!/bin/bash
 
-#rebuild and restart docker containers
+# Rebuild and restart Docker containers
+
+/usr/local/bin/docker compose -f docker-compose.yml build --no-cache
+
+# Check for dangling images
 status2=$(docker images -f "dangling=true" -q | wc -l)
 
 # Delete all none images
@@ -12,6 +16,8 @@ if [ $status2 -gt 0 ]; then
     echo "done"
 fi
 
-#docker network create abridge;
+# Start Docker containers
 /usr/local/bin/docker compose -f docker-compose.yml up --build -d
+
+# Show Docker container status
 /usr/local/bin/docker compose -f docker-compose.yml ps

@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import swaggerUi from "swagger-ui-express";
 import swaggerDocs from "../config/swagger.js";
 import authRouter from "./routes/AuthRoute.js";
+import userRouter from "./routes/UserRoute.js";
 import attendanceRouter from "./routes/AttendanceRoute.js";
 
 dotenv.config();
@@ -17,6 +18,7 @@ app.use(express.json());
 
 // Routes
 app.use("/auth", authRouter);
+app.use("/user", userRouter);
 app.use("/attend", attendanceRouter);
 
 // Swagger
