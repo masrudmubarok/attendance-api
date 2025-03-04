@@ -118,13 +118,33 @@ export const getAttendanceReport = async (req, res) => {
 
 export const searchAttendance = async (req, res) => {
   try {
-    const { user_id } = req.query;
+    const { user_id, startDate, endDate } = req.query;
+    const query = {
+      bool: {
+        must: [],
+      },
+    };
+
+    if (user_id) {
+      query.bool.must.push({ match: { user_id: user_id } });
+    }
+
+    if (startDate && endDate) {
+      query.bool.must.push({
+        range: {
+          clock_in: {
+            gte: startDate,
+            lte: endDate,
+          },
+        },
+      });
+    }
+
     const result = await elasticsearch.search({
       index: "attendance",
-      body: {
-        query: { match: { user_id: user_id } },
-      },
+      body: { query },
     });
+
     res.status(200).json({ attendance: result.hits.hits.map(hit => hit._source) });
   } catch (error) {
     console.error("Error searching attendance:", error);
