@@ -60,25 +60,6 @@ router.post("/clock-out", verifToken, clockOutUser);
 
 /**
  * @swagger
- * /attend/report:
- *   get:
- *     summary: Get attendance report
- *     description: Retrieve the attendance history of all users
- *     tags: [Attendance]
- *     security:
- *       - bearerAuth: []
- *     responses:
- *       200:
- *         description: Successfully retrieved attendance history
- *       401:
- *         description: Unauthorized - Invalid or missing token
- *       500:
- *         description: Server error
- */
-router.get("/report", verifToken, getAttendanceReport);
-
-/**
- * @swagger
  * /attend/search:
  *   get:
  *     summary: Search attendance by user ID and/or date range
@@ -116,10 +97,10 @@ router.get("/search", verifToken, searchAttendance);
 
 /**
  * @swagger
- * /attend/user:
+ * /attend/report:
  *   get:
- *     summary: Get attendance by user
- *     description: Retrieve the attendance history of the authenticated user
+ *     summary: Get attendance report
+ *     description: Retrieve the attendance history of all users
  *     tags: [Attendance]
  *     security:
  *       - bearerAuth: []
@@ -131,7 +112,7 @@ router.get("/search", verifToken, searchAttendance);
  *       500:
  *         description: Server error
  */
-router.get("/user", verifToken, getAttendanceByUser);
+router.get("/report", verifToken, getAttendanceReport);
 
 // Test Route
 router.get("/test", (req, res) => {
