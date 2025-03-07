@@ -1,5 +1,5 @@
 import redis from "../../config/redis.js";
-import { getUserProfile } from "../models/UserModel.js";
+import { getUserProfile, getAllUsers } from "../models/UserModel.js";
 import sendEmail from "../../config/email.js";
 
 export const getProfile = async (req, res) => {
@@ -23,31 +23,30 @@ export const getProfile = async (req, res) => {
 
 export const scheduleClockInReminder = async (req, res) => {
   try {
-    const { userId, reminderTime, email } = req.body;
-    const reminderKey = `clockInReminder:${userId}`;
-    const expirationTime = Math.floor((reminderTime - Date.now()) / 1000);
+    const users = await getAllUsers();
 
-    await redis.set(reminderKey, "reminder", "EX", expirationTime);
+    if (users && users.length > 0) {
+      const emails = users
+        .filter((user) => user.email)
+        .map((user) => user.email);
 
-    res.status(200).json({ message: "Reminder scheduled successfully" });
+      if (emails.length > 0) {
+        try {
+          await sendEmail(emails, "Clock-in Reminder", "It's time to clock-in guys!");
+          console.log("Reminder email sent to all users.");
+          res.status(200).json({ message: "Reminder email sent to all users." });
+        } catch (emailError) {
+          console.error("Error sending reminder email to all users:", emailError);
+          res.status(500).json({ message: "Error sending reminder email." });
+        }
+      } else {
+        console.warn("No users with valid email addresses found.");
+        res.status(404).json({ message: "No users with valid email addresses found." });
+      }
+    } else {
+      res.status(404).json({ message: "No users found." });
+    }
   } catch (error) {
-    res.status(500).json({ message: "Error scheduling reminder", error: error.message });
+    res.status(500).json({ message: "Error scheduling reminder email", error: error.message });
   }
 };
-
-redis.on("pmessage", (pattern, channel, message) => {
-    if (message === "expired" && channel.startsWith("__keyevent@0__:expired:clockInReminder:")) {
-      const userId = channel.split(":")[3];
-      getUserProfile(userId)
-        .then((user) => {
-          if (user && user.email) {
-            sendEmail(user.email, "Clock-in Reminder", "It's time to clock-in guys!");
-          } else {
-            console.error(`User with ID ${userId} not found or email is missing.`);
-          }
-        })
-        .catch((error) => {
-          console.error(`Error getting user profile for ID ${userId}:`, error);
-        });
-    }
-});

@@ -37,41 +37,19 @@ router.get("/profile", verifToken, getProfile);
  * @swagger
  * /user/clock-in-reminder:
  *   post:
- *     summary: Schedule a clock-in reminder
- *     description: Schedule a clock-in reminder for the authenticated user
+ *     summary: Schedule a clock-in reminder for all users
+ *     description: Sends a clock-in reminder to all users 5 minutes after the request.
  *     tags:
  *       - User
- *     security:
- *       - bearerAuth: []
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               userId:
- *                 type: integer
- *                 description: The user ID.
- *               clockInReminder:
- *                 type: integer
- *                 description: Timestamp for the clock-in reminder.
- *               email:
- *                 type: string
- *                 description: User's email address.
- *             example:
- *               userId: 123
- *               clockInTime: 1678886400000
- *               email: user@example.com
  *     responses:
  *       200:
- *         description: Clock-in reminder scheduled successfully
- *       401:
- *         description: Unauthorized - Invalid or missing token
+ *         description: Clock-in reminder scheduled for all users in 5 minutes.
+ *       404:
+ *         description: No users found.
  *       500:
- *         description: Server error
+ *         description: Server error.
  */
-router.post("/clock-in-reminder", verifToken, scheduleClockInReminder);
+router.post("/clock-in-reminder", scheduleClockInReminder);
 
 // Route test
 router.get("/test", (req, res) => {
