@@ -38,12 +38,12 @@ router.get("/profile", verifToken, getProfile);
  * /user/clock-in-reminder:
  *   post:
  *     summary: Schedule a clock-in reminder for all users
- *     description: Sends a clock-in reminder to all users 5 minutes after the request.
+ *     description: Sends a clock-in reminder to all users.
  *     tags:
  *       - User
  *     responses:
  *       200:
- *         description: Clock-in reminder scheduled for all users in 5 minutes.
+ *         description: Clock-in reminder scheduled for all users.
  *       404:
  *         description: No users found.
  *       500:
