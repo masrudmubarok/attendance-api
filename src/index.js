@@ -6,17 +6,21 @@ import swaggerDocs from "../config/swagger.js";
 import authRouter from "./routes/AuthRoute.js";
 import userRouter from "./routes/UserRoute.js";
 import attendanceRouter from "./routes/AttendanceRoute.js";
+import path from "path"; // Tambahkan import path
 
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3001;
-const isProduction = process.env.NODE_ENV === 'prod';
-const SERVER = isProduction ? process.env.SERVER : `${process.env.SERVER}:${PORT}`;
+const isProduction = process.env.NODE_ENV === 'production';
+const SERVER = isProduction ? `https://${process.env.VERCEL_URL}` : `http://localhost:${PORT}`;
 
 // Middleware
 app.use(cors());
 app.use(express.json());
+
+// Serve static files from swagger-ui-dist
+app.use(express.static(path.join(__dirname, '../node_modules/swagger-ui-dist/')));
 
 // Routes
 app.use("/auth", authRouter);
