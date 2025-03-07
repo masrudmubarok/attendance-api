@@ -11,6 +11,8 @@ dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3001;
+const isProduction = process.env.NODE_ENV === 'prod';
+const SERVER = isProduction ? process.env.SERVER : `${process.env.SERVER}:${PORT}`;
 
 // Middleware
 app.use(cors());
@@ -55,5 +57,5 @@ app.use(
 
 // Start Server
 app.listen(PORT, () => {
-  console.log(`Server running at http://localhost:${PORT}`);
+  console.log(`Server running at ${SERVER}`);
 });

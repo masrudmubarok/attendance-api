@@ -23,7 +23,9 @@ const options = {
       ],
     servers: [
       {
-        url: "http://localhost:3001/",
+        url: process.env.APP_ENV === 'prod' && process.env.SERVER
+          ? process.env.SERVER
+          : `http://localhost:${process.env.PORT || 3001}/`,
       },
     ],
     components: {
