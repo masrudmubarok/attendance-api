@@ -1,0 +1,16 @@
+#!/bin/bash
+
+#remove  docker containers
+status2=`docker images -f "dangling=true" -q | wc -l`;
+
+# Delete all none images
+if [ $status2 -gt 0 ]; then
+echo "images not empty, removing them...";
+#docker rmi $(docker images -q)
+docker rmi $(docker images -f "dangling=true" -q)
+echo "done"
+fi
+
+
+/usr/local/bin/docker compose -f docker-compose.yml stop;
+/usr/local/bin/docker compose -f docker-compose.yml rm
